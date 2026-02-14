@@ -124,6 +124,3 @@ The main controller. It initializes the board from a string and manages the game
 
 Game score:
 ![My Game Screenshot](Gamescore.png)
-
-My server game
-![My Game Screenshot](Myservergame.png)
