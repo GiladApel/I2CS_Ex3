@@ -1,6 +1,5 @@
 package assignments.Ex3.core;
 
-
 import exe.ex3.game.GhostCL;
 import exe.ex3.game.PacManAlgo;
 import exe.ex3.game.PacmanGame;
@@ -10,8 +9,11 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 /**
- * MyGame - Simplified Controller.
- * Directly trusts MyAlgo for movement decisions.
+ * PSEUDO-CODE: Class MyGame
+ *
+ * 1. Define main objects: Board, Pacman, List<Ghosts>.
+ * 2. Define game variables: Score, Lives, Status (Running/Stopped).
+ * 3. Initialize SoundManager and the AutoPlayer Algorithm.
  */
 public class MyGame implements PacmanGame {
 
@@ -40,6 +42,16 @@ public class MyGame implements PacmanGame {
         System.out.println("Loaded ID: " + MyGameInfo.MY_ID);
     }
 
+    /*
+     * PSEUDO-CODE: Function Init
+     * 1. Reset lives to 1 and score to 0.
+     * 2. Define the Map (String representation of walls, coins, apples).
+     * 3. Create the Board object from the map string.
+     * 4. Place Pacman at starting position (11, 14).
+     * 5. Reset Ghosts list and add the first ghost.
+     * 6. Loop through the board to count Total Collectibles (Coins + Apples) for victory condition.
+     * 7. Print "Press Space to Start".
+     */
     @Override
     public String init(int i, String s, boolean b, long l, double v, int i1, int i2) {
         this.lives = 1;
@@ -96,6 +108,18 @@ public class MyGame implements PacmanGame {
         ghosts.add(new Ghosts(x, y, ghosts.size(), 0, isStationary));
     }
 
+    /**
+     * Function Play
+     * 1. Main loop: While game is running AND Player is alive.
+     * 2. If Game has NOT started:
+     * - Wait for SPACE key.
+     * - Set timers and play start sound.
+     * 3. Else (Game Started):
+     * - Run gameLoop() (Logic).
+     * 4. Call draw() to update screen.
+     * 5. Sleep for 75ms (FPS control).
+     * 6. Stop music when done.
+     */
     @Override
     public void play() {
         while (isRunning && lives > 0) {
@@ -115,35 +139,51 @@ public class MyGame implements PacmanGame {
         if(soundManager != null) soundManager.stopBackground();
     }
 
+    /**
+     * Function GameLoop
+     * 1. Get next Move Direction from Algorithm.
+     * 2. Update Board: Clear Pacman from old position -> Move Pacman -> Check new cell value.
+     * 3. IF (Cell is Coin OR Apple):
+     * - Increase Score.
+     * - IF Score >= Total -> WIN GAME.
+     * 4. ELSE IF (Cell is Ghost):
+     * - Decrease Lives.
+     * - IF Lives == 0 -> GAME OVER.
+     * - Respawn.
+     * 5. Set Pacman ID on new board position.
+     * 6. Move all Ghosts:
+     * - Update ghost position.
+     * - Check collision with Pacman again.
+     * 7. Spawn new Ghost if 10 seconds passed.
+     */
     private void gameLoop() {
-        // 1. Get smart direction directly from MyAlgo
         int dir = autoPlayer.move(this);
 
-        // 2. Move Pacman (Trusting MyAlgo)
-        board.set(pacman.x, pacman.y, 0);
+        board.set(pacman.x, pacman.y, MyGameInfo.EMPTY);
         pacman.move(dir, board);
 
-        // 3. Scoring
         int target = board.get(pacman.x, pacman.y);
 
-        if (target == 4 || target == 5) {
+        if (target == MyGameInfo.COIN || target == MyGameInfo.APPLE) {
             score++;
+
             if (score >= totalCollectibles) {
                 handleVictory();
                 return;
             }
-        } else if (target == 3) {
+        }
+        else if (target == MyGameInfo.GHOST) {
             lives--;
             if (lives == 0) System.out.println("GAME OVER! You lost.");
             respawn();
             return;
         }
 
-        board.set(pacman.x, pacman.y, 2);
+        board.set(pacman.x, pacman.y, MyGameInfo.PACMAN);
 
-        // 4. Move Ghosts
         for (Ghosts g : ghosts) {
             g.moveOneStep(board, pacman.x, pacman.y);
+
             if (g.x == pacman.x && g.y == pacman.y) {
                 lives--;
                 if (lives == 0) System.out.println("GAME OVER! Caught by ghost.");
@@ -158,6 +198,13 @@ public class MyGame implements PacmanGame {
         }
     }
 
+    /**
+     * Function HandleVictory
+     * 1. Stop the game loop.
+     * 2. Calculate time duration.
+     * 3. Calculate Bonus Points (faster time = more points).
+     * 4. Print "VICTORY" and stats to console.
+     */
     private void handleVictory() {
         isRunning = false;
         long durationMillis = System.currentTimeMillis() - gameStartTimeStamp;
@@ -175,6 +222,14 @@ public class MyGame implements PacmanGame {
         System.out.println("======================================");
     }
 
+    /**
+     * Function Respawn
+     * 1. Play death sound.
+     * 2. Clear Pacman and Ghosts from board.
+     * 3. Reset positions to start.
+     * 4. Reset spawn timer.
+     * 5. Pause game briefly.
+     */
     private void respawn() {
         if(soundManager != null) {
             soundManager.stopBackground();
@@ -191,6 +246,14 @@ public class MyGame implements PacmanGame {
         try { Thread.sleep(MyGameInfo.DT); } catch (Exception e) {}
     }
 
+    /**
+     * Function Draw
+     * 1. Set background color (Black).
+     * 2. Call Board.draw() (Walls, Coins).
+     * 3. Call Pacman.draw().
+     * 4. Call Ghosts.draw().
+     * 5. Show frame.
+     */
     private void draw() {
         StdDraw.setPenColor(Color.BLACK.getRGB());
         StdDraw.filledSquare(0.5, 0.5, 0.5, 0);
@@ -209,5 +272,4 @@ public class MyGame implements PacmanGame {
     @Override public String end(int i) { return ""; }
     @Override public String getData(int i) { return ""; }
     @Override public int getStatus() { return 0; }
-
 }

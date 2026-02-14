@@ -28,13 +28,13 @@ public class MyAlgo implements PacManAlgo {
 
     @Override
     public int move(PacmanGame game) {
-        // --- Step 1: Environment Analysis ---
+        // Step 1: Environment Analysis
         // We initialize variables first to avoid errors
         int[][] board = game.getGame(0);
         String posString = game.getPos(0);
         Pixel2D pacmanPos = parsePosition(posString);
 
-        // --- Step 2: Construct Safe Map (Virtual Walls) ---
+        //Step 2: Construct Safe Map (Virtual Walls)
         int[][] safeBoard = cloneBoard(board);
         markGhostsAsWalls(game, safeBoard, SAFETY_RADIUS);
 
@@ -44,7 +44,7 @@ public class MyAlgo implements PacManAlgo {
         Map regularMap = new Map(board);
         regularMap.setCyclic(game.isCyclic());
 
-        // --- Step 3: Primary Strategy - Safe Pathfinding ---
+        // Step 3: Primary Strategy - Safe Pathfinding
         // We calculate the best food FRESH every turn to avoid looping due to map errors
         Pixel2D bestFood = findBestFood(safeMap, pacmanPos);
 
@@ -55,12 +55,12 @@ public class MyAlgo implements PacManAlgo {
             }
         }
 
-        // --- Step 4: Threat Assessment & Fallback ---
+        //Step 4: Threat Assessment & Fallback
         if (isGhostTooClose(game, pacmanPos, PANIC_DISTANCE)) {
             return emergencyEscape(game, regularMap, pacmanPos);
         }
 
-        // --- Step 5: Secondary Strategy - Optimistic Pathfinding ---
+        //Step 5: Secondary Strategy - Optimistic Pathfinding
         Pixel2D optimisticFood = findBestFood(regularMap, pacmanPos);
         if (optimisticFood != null) {
             Pixel2D[] path = regularMap.shortestPath(pacmanPos, optimisticFood, 1);

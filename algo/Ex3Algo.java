@@ -10,7 +10,7 @@ import exe.ex3.game.PacmanGame;
 
 /**
  * Ex3Algo - "The Smart Pathfinder with Target Locking"
- * This class implements an intelligent agent for the Pacman game using a hybrid
+ * This class implements a smart auto Pacman for  the Pacman game using a hybrid
  * pathfinding strategy. The algorithm combines Breadth-First Search (BFS) with
  * a persistent target-locking mechanism to prevent oscillations (loops).
  * * --- The logic operates in three hierarchical states: ---
@@ -52,12 +52,12 @@ public class Ex3Algo implements PacManAlgo {
     @Override
     public int move(PacmanGame game) {
 
-        // --- Step 1: Environment Analysis ---
+        //Step 1: Environment Analysis
         int[][] board = game.getGame(0);
         String posString = game.getPos(0);
         Pixel2D pacmanPos = parsePosition(posString);
 
-        // --- Step 2: Construct Safe Map (Virtual Walls) ---
+        //Step 2: Construct Safe Map (Virtual Walls)
         int[][] safeBoard = cloneBoard(board);
         markGhostsAsWalls(game, safeBoard, SAFETY_RADIUS);
 
@@ -67,7 +67,7 @@ public class Ex3Algo implements PacManAlgo {
         Map regularMap = new Map(board);
         regularMap.setCyclic(game.isCyclic());
 
-        // --- Step 3: Target Locking Logic ---
+        // Step 3: Target Locking Logic
         // Check if current target is still valid (contains food)
         if (_targetFood != null) {
             int targetVal = board[_targetFood.getX()][_targetFood.getY()];

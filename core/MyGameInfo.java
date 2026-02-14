@@ -20,7 +20,6 @@ public class MyGameInfo {
     public static final int WALL = 1;
     public static final int PACMAN = 2;
     public static final int GHOST = 3;
-    public static final int COIN = 3;
+    public static final int COIN = 4;
     public static final int APPLE = 5;
-    public static final int TOTAL_LIVES = 1;
 }
