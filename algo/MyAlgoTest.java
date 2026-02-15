@@ -14,7 +14,6 @@ class MyAlgoTest {
 
     /**
      * TEST 1: Basic Pathfinding
-     * -------------------------
      * Scenario:
      * - Pacman at (1,1)
      * - Coin (Value 4) at (2,1) [To the Right]
@@ -82,7 +81,6 @@ class MyAlgoTest {
 
     /**
      * TEST 3: Virtual Wall (Ghost Avoidance)
-     * --------------------------------------
      * Scenario:
      * - Pacman at (0,1).
      * - Food at (2,1) [RIGHT].
@@ -125,7 +123,6 @@ class MyAlgoTest {
 
     /**
      * TEST 4: Emergency Escape (Panic Mode)
-     * -------------------------------------
      * Scenario:
      * - Ghost is adjacent at (1,2) [UP].
      * - Pacman at (1,1).

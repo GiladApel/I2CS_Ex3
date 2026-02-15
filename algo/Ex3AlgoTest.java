@@ -67,7 +67,7 @@ class Ex3AlgoTest {
         StubGame game = new StubGame();
         int[][] board = new int[5][5];
 
-        // --- Step 1: Setup Original Target ---
+        // Step 1: Setup Original Target
         board[4][1] = 4; // Target A (Far)
         game.setBoard(board);
         game.setPos("1,1,0");
@@ -76,7 +76,7 @@ class Ex3AlgoTest {
         int move1 = algo.move(game);
         assertEquals(Game.RIGHT, move1, "First move should be towards target (4,1)");
 
-        // --- Step 2: Simulate Progress & Distraction ---
+        // Step 2: Simulate Progress & Distraction
         // Move Pacman one step right to (2,1)
         game.setPos("2,1,0");
 
@@ -132,7 +132,6 @@ class Ex3AlgoTest {
 
     /**
      * TEST 4: Emergency Escape
-     * ------------------------
      * Scenario:
      * - Ghost at (1,2) [UP] very close.
      * - Pacman at (1,1).
