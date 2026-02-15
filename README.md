@@ -1,7 +1,7 @@
 # Ex3 - Pacman Game Project
 
 ## 1. Overview
-In this project, I implemented an autonomous Pacman agent using Java. My goal was to create an algorithm that navigates a maze, collects points (Coins and Apples), and intelligently avoids ghosts.
+In this project, I implemented an autonomous Pacman using Java. My goal was to create an algorithm that navigates a maze, collects points (Coins and Apples), and intelligently avoids ghosts.
 
 The core of my solution is in the `Ex3Algo` class. It uses a **BFS (Breadth-First Search)** algorithm to find the shortest path, combined with a "Safety First" approach.
 

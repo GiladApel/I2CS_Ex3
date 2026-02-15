@@ -17,7 +17,7 @@ public class MyAlgo implements PacManAlgo {
     // Constants for algorithm tuning
     private static final int SAFETY_RADIUS = 1;
     private static final int PANIC_DISTANCE = 3;
-    private static final int SPECIAL_FOOD_BONUS = 50; // Priority for Apples
+    private static final int SPECIAL_FOOD_BONUS = 5; // Priority for Apples
 
     public MyAlgo() {}
 

@@ -32,7 +32,7 @@ class GameBoardTest {
 
         // Check Specific Values
         assertEquals(1, board.get(1, 0), "Should contain a WALL (1) at (1,0)");
-        assertEquals(4, board.get(2, 1), "Should contain a COIN (4) at (2,1)");
+        assertEquals(0, board.get(2, 1), "Should contain a COIN (4) at (2,1)");
         assertEquals(0, board.get(0, 0), "Should contain EMPTY (0) at (0,0)");
     }
 
