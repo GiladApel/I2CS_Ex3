@@ -15,7 +15,7 @@ import exe.ex3.game.PacmanGame;
  * a persistent target-locking mechanism to prevent oscillations (loops).
  * * --- The logic operates in three hierarchical states: ---
  * 1. Target Locking (Consistency):
- * Ensures the agent commits to a specific food item until consumed.
+ * Ensures the pacman commits to a specific food item until consumed.
  * 2. Cautious State (Virtual Walls):
  * Navigates using safety zones around ghosts to naturally avoid threats.
  * 3. Fallback & Emergency:
@@ -81,7 +81,7 @@ public class Ex3Algo implements PacManAlgo {
             _targetFood = findBestFood(safeMap, pacmanPos);
         }
 
-        // --- Step 4: Primary Strategy - Safe Path to Locked Target ---
+        // Step 4: Primary Strategy
         if (_targetFood != null) {
             Pixel2D[] path = safeMap.shortestPath(pacmanPos, _targetFood, 1);
             if (path != null && path.length > 1) {
@@ -89,7 +89,7 @@ public class Ex3Algo implements PacManAlgo {
             }
         }
 
-        // --- Step 5: Fallbacks (If Safe Path Fails) ---
+        // Step 5: Fallbacks (If Safe Path Fails)
 
         // Immediate Threat? Panic!
         if (isGhostTooClose(game, pacmanPos, PANIC_DISTANCE)) {
@@ -109,10 +109,7 @@ public class Ex3Algo implements PacManAlgo {
         return emergencyEscape(game, regularMap, pacmanPos);
     }
 
-    // ==================================================================================
-    //                                  HELPER METHODS
-    // ==================================================================================
-
+    // HELPER METHODS
     private boolean isGhostTooClose(PacmanGame game, Pixel2D pacmanPos, int limitDist) {
         GhostCL[] ghosts = game.getGhosts(0);
         if (ghosts == null) return false;

@@ -18,7 +18,6 @@ class MyAlgoTest {
      * - Pacman at (1,1)
      * - Coin (Value 4) at (2,1) [To the Right]
      * - No walls, no ghosts.
-     *
      * Pseudo-Code:
      * 1. Init Empty Board[5][5].
      * 2. Board[2][1] = 4 (Coin).

@@ -153,22 +153,4 @@ public class Ghosts implements GhostCL {
     @Override public String getInfo() { return ""; }
     @Override public double remainTimeAsEatable(int i) { return 0; }
     @Override public int getStatus() { return 0; }
-
-    public static class Manualalgo implements PacManAlgo {
-        private int _lastDirection = 0;
-        public Manualalgo() {}
-        @Override
-        public int move(PacmanGame game) {
-            if (StdDraw.hasNextKeyTyped()) {
-                char key = StdDraw.nextKeyTyped();
-                if (key == 'w' || key == 'W') _lastDirection = Game.UP;
-                else if (key == 'x' || key == 'X') _lastDirection = Game.DOWN;
-                else if (key == 'a' || key == 'A') _lastDirection = Game.LEFT;
-                else if (key == 'd' || key == 'D') _lastDirection = Game.RIGHT;
-            }
-            return _lastDirection;
-        }
-        @Override
-        public String getInfo() { return "Manual"; }
-    }
 }
