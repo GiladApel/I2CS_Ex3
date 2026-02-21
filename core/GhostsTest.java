@@ -11,10 +11,8 @@ class GhostsTest {
 
     /**
      * TEST 1: Ghost Initialization
-     * ----------------------------
      * Verify that a ghost is created at the correct coordinates.
      *
-     * Pseudo-Code:
      * 1. Create Ghost at (5, 5).
      * 2. Assert Ghost.x == 5.
      * 3. Assert Ghost.y == 5.
@@ -28,11 +26,9 @@ class GhostsTest {
 
     /**
      * TEST 2: Ghost Movement Logic
-     * ----------------------------
      * Verify that the ghost actually moves when `moveOneStep` is called.
      * We place Pacman nearby to encourage movement.
      *
-     * Pseudo-Code:
      * 1. Create a simple 3x3 Board (all empty).
      * 2. Place Ghost at (1,1).
      * 3. Place Pacman target at (1,2) [UP].
@@ -64,11 +60,9 @@ class GhostsTest {
 
     /**
      * TEST 3: Boundary Safety Check (CRITICAL)
-     * ----------------------------------------
      * Verify that the ghost NEVER goes out of the board limits.
      * This prevents ArrayOutOfBounds exceptions during the game.
      *
-     * Pseudo-Code:
      * 1. Create small 2x2 Board.
      * 2. Init Ghost at (0,0).
      * 3. Loop 100 times:

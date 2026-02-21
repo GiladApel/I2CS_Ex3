@@ -11,7 +11,6 @@ class GameBoardTest {
 
     /**
      * TEST 1: Initialization & Parsing
-     * --------------------------------
      * Checks if the board loads correctly from a CSV/String format.
      * We create a small 3x3 board:
      * 0 1 0
@@ -38,7 +37,6 @@ class GameBoardTest {
 
     /**
      * TEST 2: Getters & Setters
-     * -------------------------
      * Verifies we can modify the board state (e.g., Pacman eating a coin).
      */
     @Test
@@ -58,7 +56,6 @@ class GameBoardTest {
 
     /**
      * TEST 3: Cyclic Wrapping Logic (CRITICAL!)
-     * -----------------------------------------
      * This prevents the game from crashing when Pacman goes off-screen.
      * Logic:
      * - If x < 0 -> Go to Width-1.

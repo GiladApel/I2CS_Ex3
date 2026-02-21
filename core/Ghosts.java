@@ -6,14 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * PSEUDO-CODE:
  * Class Ghosts
  *
- * 1. Represents an enemy entity on the grid.
- * 2. Stores position (x,y) and the item currently hidden underneath it.
- * 3. LOGIC UPDATE: Uses "Smart Random" movement.
- * - It remembers the last direction.
- * - It tries NOT to reverse direction immediately (to avoid shaking back and forth).
+ * Represents an enemy entity on the grid.
+ * Uses "Smart Random" movement: remembers the last direction
+ * and tries NOT to reverse direction immediately to avoid shaking.
  */
 public class Ghosts implements GhostCL {
 
@@ -27,6 +24,14 @@ public class Ghosts implements GhostCL {
     // Memory for movement logic (prevents loops)
     private int lastDirection = -1;
 
+    /**
+     * Constructor to initialize a new Ghost.
+     * * @param x            The starting X coordinate.
+     * @param y            The starting Y coordinate.
+     * @param id           The ghost's ID (used to determine its image).
+     * @param itemUnder    The item currently located under the ghost (e.g., Coin, Empty).
+     * @param isStationary True if this ghost is a stationary target.
+     */
     public Ghosts(int x, int y, int id, int itemUnder, boolean isStationary) {
         this.x = x;
         this.y = y;
@@ -38,17 +43,17 @@ public class Ghosts implements GhostCL {
         this.lastDirection = -1; // No previous move yet
     }
 
+
     /**
-     * Function MoveOneStep
-     * 1. If Stationary, return.
-     * 2. Get all valid neighbors (not Walls, not other Ghosts).
-     * 3. Filter the moves:
-     * - Create a preferred list that EXCLUDES the "Reverse" direction.
-     * - (Example: If moved UP last time, don't put DOWN in the preferred list).
-     * 4. Selection:
-     * - If preferred list is not empty -> Pick random from preferred.
-     * - If preferred list IS empty (Dead End) -> Pick from original valid moves (allow turning back).
-     * 5. Execute Move & Update Board.
+     * Executes one movement step for the ghost.
+     * PSEUDO-CODE:
+     * 1. Get all valid neighbors (Not Walls/Ghosts).
+     * 2. Filter moves: Exclude the "Reverse" direction to prevent shaking back and forth.
+     * 3. Pick a random preferred move, or fallback to any valid move if trapped.
+     * 4. Update the board state.
+     * * @param board The current game board.
+     * @param pacX  Pacman's X coordinate (for future AI expansion).
+     * @param pacY  Pacman's Y coordinate (for future AI expansion).
      */
     public void moveOneStep(GameBoard board, int pacX, int pacY) {
         if (isStationary) return;
@@ -107,7 +112,7 @@ public class Ghosts implements GhostCL {
         int ny = chosen[2];
         int targetVal = board.get(nx, ny);
 
-        // Board
+        // Board Update
         board.set(x, y, itemUnderneath); // Put back what we stood on
 
         if (targetVal != MyGameInfo.PACMAN) {
@@ -122,7 +127,12 @@ public class Ghosts implements GhostCL {
         lastDirection = newDir; // Remember direction for next time
     }
 
-    // Helper to detect 180-degree turns
+    /**
+     * Helper to detect 180-degree turns.
+     * * @param lastDir    The previous movement direction code.
+     * @param currentDir The new candidate direction code.
+     * @return true if the new direction is directly opposite to the last one.
+     */
     private boolean isOpposite(int lastDir, int currentDir) {
         if (lastDir == Game.UP && currentDir == Game.DOWN) return true;
         if (lastDir == Game.DOWN && currentDir == Game.UP) return true;
@@ -131,6 +141,11 @@ public class Ghosts implements GhostCL {
         return false;
     }
 
+    /**
+     * Draws the ghost on the game screen.
+     * Includes a visual "spawn" effect where the ghost grows in size during its first 3 seconds.
+     * * @param board The game board used for scale and coordinate calculations.
+     */
     public void draw(GameBoard board) {
         double s = Math.min(1.0/board.getWidth(), 1.0/board.getHeight());
         double xp = (x + 0.5) * (1.0/board.getWidth());
@@ -147,6 +162,7 @@ public class Ghosts implements GhostCL {
         }
     }
 
+    //INTERFACE IMPLEMENTATIONS
 
     @Override public String getPos(int i) { return x + "," + y + ",0"; }
     @Override public int getType() { return 0; }

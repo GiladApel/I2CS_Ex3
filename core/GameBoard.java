@@ -16,6 +16,10 @@ public class GameBoard {
     private int[][] data;
     private int rows, cols;
 
+    /**
+     * Constructor for the GameBoard.
+     * * @param mapStr The raw string representation of the map grid.
+     */
     public GameBoard(String mapStr) {
         parseMap(mapStr);
     }
@@ -30,6 +34,7 @@ public class GameBoard {
      * - Convert the raw number to Game Constants:
      * (1 -> WALL, 3 -> COIN, 5 -> APPLE, Else -> EMPTY).
      * - Handle parsing errors (default to 0).
+     * * @param mapStr The raw string representation of the map to parse.
      */
     private void parseMap(String mapStr) {
         String[] lines = mapStr.split("\n");
@@ -112,6 +117,12 @@ public class GameBoard {
      * 2. IF image loading fails (Exception caught):
      * - Set the pen color to the fallback color.
      * - Draw a geometric shape (Square for walls, Circle for items).
+     * * @param x        The exact x-coordinate (in window scale) to draw the item.
+     * @param y        The exact y-coordinate (in window scale) to draw the item.
+     * @param path     The relative file path to the image in the data folder.
+     * @param size     The calculated size/scale for the item.
+     * @param c        The fallback color to use if the image file is missing.
+     * @param isSquare True if the fallback shape should be a square, False for a circle.
      */
     private void drawItem(double x, double y, String path, double size, Color c, boolean isSquare) {
         try {
@@ -127,16 +138,50 @@ public class GameBoard {
         }
     }
 
-    // Getters and Setters
+    //
+    // GETTERS, SETTERS & HELPERS
+    //
+
+    /**
+     * Retrieves the item value at a specific cell.
+     * @param x The column index.
+     * @param y The row index.
+     * @return The integer value representing what is currently in that cell.
+     */
     public int get(int x, int y) { return data[x][y]; }
+
+    /**
+     * Updates the item value at a specific cell.
+     * @param x   The column index.
+     * @param y   The row index.
+     * @param val The new integer value to set in that cell.
+     */
     public void set(int x, int y, int val) { data[x][y] = val; }
+
+    /** @return The total number of columns in the grid. */
     public int getWidth() { return cols; }
+
+    /** @return The total number of rows in the grid. */
     public int getHeight() { return rows; }
+
+    /** @return The entire 2D array representing the game board. */
     public int[][] getGrid() { return data; }
 
-    // Helper to handle cyclic borders if necessary
+    /**
+     * Helper to handle cyclic borders if necessary.
+     * Ensures coordinates wrap around screen edges.
+     * * @param val The current coordinate value (x or y).
+     * @param max The maximum limit for that coordinate (width or height).
+     * @return The corrected, wrapped coordinate.
+     */
     public int wrap(int val, int max) { return (val < 0) ? max - 1 : (val >= max) ? 0 : val; }
 
+    /**
+     * Checks if a given coordinate is a wall (or out of bounds).
+     * * @param x The column index to check.
+     * @param y The row index to check.
+     * @return true if the cell is a wall or completely out of bounds, false otherwise.
+     */
     public boolean isWall(int x, int y) {
         if(x < 0 || x >= cols || y < 0 || y >= rows) return true;
         return data[x][y] == MyGameInfo.WALL;

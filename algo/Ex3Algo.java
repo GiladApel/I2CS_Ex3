@@ -10,10 +10,10 @@ import exe.ex3.game.PacmanGame;
 
 /**
  * Ex3Algo - "The Smart Pathfinder with Target Locking"
- * This class implements a smart auto Pacman for  the Pacman game using a hybrid
+ * This class implements an auto Pacman for the Pacman game using a hybrid
  * pathfinding strategy. The algorithm combines Breadth-First Search (BFS) with
  * a persistent target-locking mechanism to prevent oscillations (loops).
- * * --- The logic operates in three hierarchical states: ---
+ * The logic operates in three hierarchical states:
  * 1. Target Locking (Consistency):
  * Ensures the pacman commits to a specific food item until consumed.
  * 2. Cautious State (Virtual Walls):
@@ -42,7 +42,7 @@ public class Ex3Algo implements PacManAlgo {
 
     /**
      * The main execution method.
-     * --- Algorithm Flow: ---
+     * Algorithm Flow:
      * 1. Environment Analysis: Parse positions and create map copies.
      * 2. Virtual Walls: Mark ghost surroundings as obstacles on a "Safe Map".
      * 3. Target Management: Lock onto a specific food item to prevent looping.
@@ -110,6 +110,18 @@ public class Ex3Algo implements PacManAlgo {
     }
 
     // HELPER METHODS
+
+    /**
+     * Checks if any ghost is dangerously close to Pacman.
+     * 1. Get all ghosts from the game.
+     * 2. Loop through each ghost and calculate its 2D distance to Pacman.
+     * 3. Return true if ANY ghost is within the limit distance.
+     *
+     * @param game      The current game state.
+     * @param pacmanPos The current pixel position of Pacman.
+     * @param limitDist The panic threshold distance.
+     * @return true if a ghost is too close, false otherwise.
+     */
     private boolean isGhostTooClose(PacmanGame game, Pixel2D pacmanPos, int limitDist) {
         GhostCL[] ghosts = game.getGhosts(0);
         if (ghosts == null) return false;
@@ -120,6 +132,17 @@ public class Ex3Algo implements PacManAlgo {
         return false;
     }
 
+    /**
+     * Expands the walls around ghosts to create "Safety Zones".
+     * 1. Loop through all active ghosts.
+     * 2. For each ghost, iterate through a square area defined by 'radius'.
+     * 3. Calculate target coordinates, adjusting for cyclic board if needed.
+     * 4. Change the value of those coordinates to 1 (Wall).
+     *
+     * @param game   The current game state.
+     * @param board  The 2D array representation of the board (to be modified).
+     * @param radius The radius of the safety zone around the ghost.
+     */
     private void markGhostsAsWalls(PacmanGame game, int[][] board, int radius) {
         GhostCL[] ghosts = game.getGhosts(0);
         if (ghosts == null) return;
@@ -139,6 +162,20 @@ public class Ex3Algo implements PacManAlgo {
         }
     }
 
+    /**
+     * Calculates the best move to maximize distance from the closest threat.
+     * 1. Iterate through all 4 possible movement directions.
+     * 2. Determine the next pixel for each direction.
+     * 3. If the next pixel is NOT a wall:
+     * a. Calculate its distance to the closest ghost.
+     * b. If this distance is the largest found so far, save this direction.
+     * 4. Return the direction that maximizes survival chances.
+     *
+     * @param game      The current game state.
+     * @param map       The map object for collision checking.
+     * @param pacmanPos The current position of Pacman.
+     * @return The best direction integer (Game.UP, DOWN, LEFT, RIGHT).
+     */
     private int emergencyEscape(PacmanGame game, Map map, Pixel2D pacmanPos) {
         GhostCL[] ghosts = game.getGhosts(0);
         if(ghosts == null) return Game.UP;
@@ -163,6 +200,19 @@ public class Ex3Algo implements PacManAlgo {
         return bestDir;
     }
 
+    /**
+     * Scans the map to find the most optimal food target based on distance and value.
+     * 1. Iterate over every cell in the 2D grid.
+     * 2. If the cell contains an item (>1):
+     * a. Calculate the BFS shortest path to it.
+     * b. Base score = Path Length.
+     * c. Subtract BONUS if the item is special (e.g., Apple).
+     * 3. Update the best target if this score is the lowest (most optimal).
+     *
+     * @param map   The map to search on (Safe or Regular).
+     * @param start The starting point (Pacman's position).
+     * @return The Pixel2D coordinates of the best food target, or null if none found.
+     */
     private Pixel2D findBestFood(Map map, Pixel2D start) {
         Pixel2D bestTarget = null;
         double minScore = Double.MAX_VALUE;
@@ -186,6 +236,14 @@ public class Ex3Algo implements PacManAlgo {
         return bestTarget;
     }
 
+    /**
+     * Creates a deep copy of a 2D integer array.
+     * 1. Initialize a new 2D array with identical dimensions.
+     * 2. Loop through each row and copy its contents using arraycopy.
+     *
+     * @param board The original 2D array.
+     * @return A completely independent clone of the board.
+     */
     private int[][] cloneBoard(int[][] board) {
         int[][] newBoard = new int[board.length][board[0].length];
         for(int i=0; i<board.length; i++) {
@@ -194,11 +252,30 @@ public class Ex3Algo implements PacManAlgo {
         return newBoard;
     }
 
+    /**
+     * Parses a string representation of coordinates into a Pixel2D object.
+     * 1. Split the input string by commas.
+     * 2. Parse the first two string parts into X and Y integers.
+     *
+     * @param pos String containing coordinates (e.g., "11,14,0").
+     * @return A new Index2D object representing the coordinates.
+     */
     private Pixel2D parsePosition(String pos) {
         String[] parts = pos.split(",");
         return new Index2D(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
     }
 
+    /**
+     * Calculates the adjacent pixel given a direction, supporting cyclic boards.
+     * 1. Adjust X or Y based on the given direction.
+     * 2. Wrap coordinates around to the opposite side if they exceed board limits.
+     *
+     * @param p   The starting pixel.
+     * @param dir The direction to move.
+     * @param w   Board width.
+     * @param h   Board height.
+     * @return The calculated next Pixel2D.
+     */
     private Pixel2D nextPixel(Pixel2D p, int dir, int w, int h) {
         int x = p.getX(), y = p.getY();
         if (dir == Game.UP) y++;
@@ -210,6 +287,18 @@ public class Ex3Algo implements PacManAlgo {
         return new Index2D(x, y);
     }
 
+    /**
+     * Determines the movement direction required to go from current to next pixel.
+     * 1. Calculate the difference in X and Y axes.
+     * 2. If the difference is > 1, it implies a cyclic wrap-around move.
+     * 3. Otherwise, return standard adjacent direction.
+     *
+     * @param current The starting pixel.
+     * @param next    The destination pixel (must be adjacent).
+     * @param w       Board width.
+     * @param h       Board height.
+     * @return The direction code (Game.UP, DOWN, LEFT, RIGHT).
+     */
     private int getDirection(Pixel2D current, Pixel2D next, int w, int h) {
         int dx = next.getX() - current.getX();
         int dy = next.getY() - current.getY();

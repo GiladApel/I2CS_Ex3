@@ -41,5 +41,4 @@ public class GameGraphics {
         // 5. Show
         StdDraw.show(0);
     }
-
 }
