@@ -5,7 +5,6 @@ import java.awt.Color;
 
 /**
  * Class GameBoard
- *
  * 1. Purpose: Manages the logical grid (2D array) of the game.
  * 2. Data: Stores integers representing Walls, Coins, Apples, or Empty space.
  * 3. Functionality:
@@ -54,14 +53,11 @@ public class GameBoard {
 
                     if (val == 1) {
                         data[x][i] = MyGameInfo.WALL;
-                    }
-                    else if (val == 3) {
+                    } else if (val == 3) {
                         data[x][i] = MyGameInfo.COIN;
-                    }
-                    else if (val == 5) {
+                    } else if (val == 5) {
                         data[x][i] = MyGameInfo.APPLE;
-                    }
-                    else {
+                    } else {
                         data[x][i] = MyGameInfo.EMPTY;
                     }
                 } catch (Exception e) {
@@ -95,11 +91,9 @@ public class GameBoard {
 
                 if (type == MyGameInfo.WALL) {
                     drawItem(xp, yp, "data/wall.png", s, Color.BLUE, true);
-                }
-                else if (type == MyGameInfo.COIN) {
+                } else if (type == MyGameInfo.COIN) {
                     drawItem(xp, yp, "data/coin.png", s * 0.6, Color.PINK, false);
-                }
-                else if (type == MyGameInfo.APPLE) {
+                } else if (type == MyGameInfo.APPLE) {
                     try {
                         StdDraw.picture(xp, yp, "data/APPLE.jpg", s * 0.8, s * 0.8);
                     } catch (Exception e) {
@@ -118,6 +112,7 @@ public class GameBoard {
      * - Set the pen color to the fallback color.
      * - Draw a geometric shape (Square for walls, Circle for items).
      * * @param x        The exact x-coordinate (in window scale) to draw the item.
+     *
      * @param y        The exact y-coordinate (in window scale) to draw the item.
      * @param path     The relative file path to the image in the data folder.
      * @param size     The calculated size/scale for the item.
@@ -144,46 +139,57 @@ public class GameBoard {
 
     /**
      * Retrieves the item value at a specific cell.
+     *
      * @param x The column index.
      * @param y The row index.
      * @return The integer value representing what is currently in that cell.
      */
-    public int get(int x, int y) { return data[x][y]; }
+    public int get(int x, int y) {
+        return data[x][y];
+    }
 
     /**
      * Updates the item value at a specific cell.
+     *
      * @param x   The column index.
      * @param y   The row index.
      * @param val The new integer value to set in that cell.
      */
-    public void set(int x, int y, int val) { data[x][y] = val; }
+    public void set(int x, int y, int val) {
+        data[x][y] = val;
+    }
 
-    /** @return The total number of columns in the grid. */
-    public int getWidth() { return cols; }
+    /**
+     * @return The total number of columns in the grid.
+     */
+    public int getWidth() {
+        return cols;
+    }
 
-    /** @return The total number of rows in the grid. */
-    public int getHeight() { return rows; }
+    /**
+     * @return The total number of rows in the grid.
+     */
+    public int getHeight() {
+        return rows;
+    }
 
-    /** @return The entire 2D array representing the game board. */
-    public int[][] getGrid() { return data; }
+    /**
+     * @return The entire 2D array representing the game board.
+     */
+    public int[][] getGrid() {
+        return data;
+    }
 
     /**
      * Helper to handle cyclic borders if necessary.
      * Ensures coordinates wrap around screen edges.
      * * @param val The current coordinate value (x or y).
+     *
      * @param max The maximum limit for that coordinate (width or height).
      * @return The corrected, wrapped coordinate.
      */
-    public int wrap(int val, int max) { return (val < 0) ? max - 1 : (val >= max) ? 0 : val; }
-
-    /**
-     * Checks if a given coordinate is a wall (or out of bounds).
-     * * @param x The column index to check.
-     * @param y The row index to check.
-     * @return true if the cell is a wall or completely out of bounds, false otherwise.
-     */
-    public boolean isWall(int x, int y) {
-        if(x < 0 || x >= cols || y < 0 || y >= rows) return true;
-        return data[x][y] == MyGameInfo.WALL;
+    public int wrap(int val, int max) {
+        return (val < 0) ? max - 1 : (val >= max) ? 0 : val;
     }
 }
+

@@ -16,13 +16,13 @@ public class MyGame implements PacmanGame {
 
     private GameBoard board;
     private MyPacman pacman;
-    private ArrayList<Ghosts> ghosts = new ArrayList<>();
+    private final ArrayList<Ghosts> ghosts = new ArrayList<>();
 
     private int score = 0;
     private int lives = 1;
     private boolean isRunning = true;
-    private SoundManager soundManager;
-    private PacManAlgo autoPlayer;
+    private final SoundManager soundManager;
+    private final PacManAlgo autoPlayer;
 
     // Scoring & Time
     private int totalCollectibles = 0;
@@ -31,7 +31,6 @@ public class MyGame implements PacmanGame {
     private final long BIRTH_INTERVAL = 8000;
     private boolean isGameStarted = false;
     private final int MAX_GHOSTS = 6;
-    private boolean isWin = false;
 
     public MyGame() {
         soundManager = new SoundManager();
@@ -54,7 +53,7 @@ public class MyGame implements PacmanGame {
         this.score = 0;
         this.isGameStarted = false;
         this.isRunning = true;
-        this.isWin = false;
+
 
         String rawMap =
                 "1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\n" +
@@ -138,7 +137,9 @@ public class MyGame implements PacmanGame {
             GameGraphics.drawFrame(this);
             //
 
-            try { Thread.sleep(75); } catch (Exception e) {}
+            try { Thread.sleep(75); } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (soundManager != null) soundManager.stopBackground();
     }
@@ -189,7 +190,7 @@ public class MyGame implements PacmanGame {
         }
 
         if (System.currentTimeMillis() - lastBirthTime > BIRTH_INTERVAL && ghosts.size() < MAX_GHOSTS) {
-            addGhost(ghosts.get(0).x, ghosts.get(0).y, false);
+            addGhost(ghosts.getFirst().x, ghosts.getFirst().y, false);
             lastBirthTime = System.currentTimeMillis();
         }
     }
@@ -203,7 +204,6 @@ public class MyGame implements PacmanGame {
      */
     private void handleVictory() {
         isRunning = false;
-        isWin = true;
         long durationMillis = System.currentTimeMillis() - gameStartTimeStamp;
         double durationSeconds = durationMillis / 1000.0;
         int timeBonus = (int) Math.max(0, 1000 - durationSeconds * 5);
@@ -233,7 +233,9 @@ public class MyGame implements PacmanGame {
         addGhost(11, 11, true);
         lastBirthTime = System.currentTimeMillis();
         isGameStarted = false;
-        try { Thread.sleep(MyGameInfo.DT); } catch (Exception e) {}
+        try { Thread.sleep(MyGameInfo.DT); } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // GETTERS FOR THE VIEW
@@ -241,8 +243,6 @@ public class MyGame implements PacmanGame {
     public GameBoard getBoard() { return board; }
     public MyPacman getPacman() { return pacman; }
     public ArrayList<Ghosts> getGhosts() { return ghosts; }
-    public int getScore() { return score; }
-    public int getLives() { return lives; }
 
     // INTERFACE IMPLEMENTATIONS
     @Override public int[][] getGame(int i) { return (board != null) ? board.getGrid() : null; }

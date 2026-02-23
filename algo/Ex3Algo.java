@@ -59,7 +59,7 @@ public class Ex3Algo implements PacManAlgo {
 
         //Step 2: Construct Safe Map (Virtual Walls)
         int[][] safeBoard = cloneBoard(board);
-        markGhostsAsWalls(game, safeBoard, SAFETY_RADIUS);
+        markGhostsAsWalls(game, safeBoard);
 
         Map safeMap = new Map(safeBoard);
         safeMap.setCyclic(game.isCyclic());
@@ -85,14 +85,14 @@ public class Ex3Algo implements PacManAlgo {
         if (_targetFood != null) {
             Pixel2D[] path = safeMap.shortestPath(pacmanPos, _targetFood, 1);
             if (path != null && path.length > 1) {
-                return getDirection(pacmanPos, path[1], safeMap.getWidth(), safeMap.getHeight());
+                return getDirection(pacmanPos, path[1]);
             }
         }
 
         // Step 5: Fallbacks (If Safe Path Fails)
 
         // Immediate Threat? Panic!
-        if (isGhostTooClose(game, pacmanPos, PANIC_DISTANCE)) {
+        if (isGhostTooClose(game, pacmanPos)) {
             return emergencyEscape(game, regularMap, pacmanPos);
         }
 
@@ -101,7 +101,7 @@ public class Ex3Algo implements PacManAlgo {
         if (optimisticFood != null) {
             Pixel2D[] path = regularMap.shortestPath(pacmanPos, optimisticFood, 1);
             if (path != null && path.length > 1) {
-                return getDirection(pacmanPos, path[1], regularMap.getWidth(), regularMap.getHeight());
+                return getDirection(pacmanPos, path[1]);
             }
         }
 
@@ -119,15 +119,14 @@ public class Ex3Algo implements PacManAlgo {
      *
      * @param game      The current game state.
      * @param pacmanPos The current pixel position of Pacman.
-     * @param limitDist The panic threshold distance.
      * @return true if a ghost is too close, false otherwise.
      */
-    private boolean isGhostTooClose(PacmanGame game, Pixel2D pacmanPos, int limitDist) {
+    private boolean isGhostTooClose(PacmanGame game, Pixel2D pacmanPos) {
         GhostCL[] ghosts = game.getGhosts(0);
         if (ghosts == null) return false;
         for (GhostCL g : ghosts) {
             Pixel2D gPos = parsePosition(g.getPos(0));
-            if (pacmanPos.distance2D(gPos) <= limitDist) return true;
+            if (pacmanPos.distance2D(gPos) <= PANIC_DISTANCE) return true;
         }
         return false;
     }
@@ -141,9 +140,8 @@ public class Ex3Algo implements PacManAlgo {
      *
      * @param game   The current game state.
      * @param board  The 2D array representation of the board (to be modified).
-     * @param radius The radius of the safety zone around the ghost.
      */
-    private void markGhostsAsWalls(PacmanGame game, int[][] board, int radius) {
+    private void markGhostsAsWalls(PacmanGame game, int[][] board) {
         GhostCL[] ghosts = game.getGhosts(0);
         if (ghosts == null) return;
         int w = board.length;
@@ -152,8 +150,8 @@ public class Ex3Algo implements PacManAlgo {
             Pixel2D gPos = parsePosition(g.getPos(0));
             int gx = gPos.getX();
             int gy = gPos.getY();
-            for (int dx = -radius; dx <= radius; dx++) {
-                for (int dy = -radius; dy <= radius; dy++) {
+            for (int dx = -SAFETY_RADIUS; dx <= SAFETY_RADIUS; dx++) {
+                for (int dy = -SAFETY_RADIUS; dy <= SAFETY_RADIUS; dy++) {
                     int x = gx + dx; int y = gy + dy;
                     if (game.isCyclic()) { x = (x + w) % w; y = (y + h) % h; }
                     if (x >= 0 && x < w && y >= 0 && y < h) { board[x][y] = 1; }
@@ -295,11 +293,9 @@ public class Ex3Algo implements PacManAlgo {
      *
      * @param current The starting pixel.
      * @param next    The destination pixel (must be adjacent).
-     * @param w       Board width.
-     * @param h       Board height.
      * @return The direction code (Game.UP, DOWN, LEFT, RIGHT).
      */
-    private int getDirection(Pixel2D current, Pixel2D next, int w, int h) {
+    private int getDirection(Pixel2D current, Pixel2D next) {
         int dx = next.getX() - current.getX();
         int dy = next.getY() - current.getY();
         if (Math.abs(dx) > 1) return (dx > 0) ? Game.LEFT : Game.RIGHT;

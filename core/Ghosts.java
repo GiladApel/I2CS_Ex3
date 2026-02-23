@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * Class Ghosts
- *
  * Represents an enemy entity on the grid.
  * Uses "Smart Random" movement: remembers the last direction
  * and tries NOT to reverse direction immediately to avoid shaking.
@@ -16,13 +15,12 @@ public class Ghosts implements GhostCL {
 
     public int x, y;
     public int itemUnderneath;
-    private String image;
-    private long birthTime;
-    private boolean isStationary;
-    private int id;
+    private final String image;
+    private final long birthTime;
+    private final boolean isStationary;
 
     // Memory for movement logic (prevents loops)
-    private int lastDirection = -1;
+    private int lastDirection;
 
     /**
      * Constructor to initialize a new Ghost.
@@ -35,7 +33,6 @@ public class Ghosts implements GhostCL {
     public Ghosts(int x, int y, int id, int itemUnder, boolean isStationary) {
         this.x = x;
         this.y = y;
-        this.id = id;
         this.image = "data/g" + (id % 4) + ".png";
         this.itemUnderneath = itemUnder;
         this.birthTime = System.currentTimeMillis();

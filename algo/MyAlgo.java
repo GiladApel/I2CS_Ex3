@@ -36,7 +36,7 @@ public class MyAlgo implements PacManAlgo {
 
         //Step 2: Construct Safe Map (Virtual Walls)
         int[][] safeBoard = cloneBoard(board);
-        markGhostsAsWalls(game, safeBoard, SAFETY_RADIUS);
+        markGhostsAsWalls(game, safeBoard);
 
         Map safeMap = new Map(safeBoard);
         safeMap.setCyclic(game.isCyclic());
@@ -51,12 +51,12 @@ public class MyAlgo implements PacManAlgo {
         if (bestFood != null) {
             Pixel2D[] path = safeMap.shortestPath(pacmanPos, bestFood, 1);
             if (path != null && path.length > 1) {
-                return getDirection(pacmanPos, path[1], safeMap.getWidth(), safeMap.getHeight());
+                return getDirection(pacmanPos, path[1]);
             }
         }
 
         //Step 4: Threat Assessment & Fallback
-        if (isGhostTooClose(game, pacmanPos, PANIC_DISTANCE)) {
+        if (isGhostTooClose(game, pacmanPos)) {
             return emergencyEscape(game, regularMap, pacmanPos);
         }
 
@@ -65,7 +65,7 @@ public class MyAlgo implements PacManAlgo {
         if (optimisticFood != null) {
             Pixel2D[] path = regularMap.shortestPath(pacmanPos, optimisticFood, 1);
             if (path != null && path.length > 1) {
-                return getDirection(pacmanPos, path[1], regularMap.getWidth(), regularMap.getHeight());
+                return getDirection(pacmanPos, path[1]);
             }
         }
 
@@ -81,15 +81,14 @@ public class MyAlgo implements PacManAlgo {
      * 3. If any ghost is closer than limitDist, return true.
      * * @param game      The current game state.
      * @param pacmanPos Pacman's current coordinates.
-     * @param limitDist The threshold distance that triggers panic mode.
      * @return true if a threat is near, false otherwise.
      */
-    private boolean isGhostTooClose(PacmanGame game, Pixel2D pacmanPos, int limitDist) {
+    private boolean isGhostTooClose(PacmanGame game, Pixel2D pacmanPos) {
         GhostCL[] ghosts = game.getGhosts(0);
         if (ghosts == null) return false;
         for (GhostCL g : ghosts) {
             Pixel2D gPos = parsePosition(g.getPos(0));
-            if (pacmanPos.distance2D(gPos) <= limitDist) return true;
+            if (pacmanPos.distance2D(gPos) <= PANIC_DISTANCE) return true;
         }
         return false;
     }
@@ -102,16 +101,15 @@ public class MyAlgo implements PacManAlgo {
      * 4. Set the board value at those coordinates to 1 (Wall).
      * * @param game   The current game state.
      * @param board  The 2D map array to modify.
-     * @param radius The size of the safety padding around the ghost.
      */
-    private void markGhostsAsWalls(PacmanGame game, int[][] board, int radius) {
+    private void markGhostsAsWalls(PacmanGame game, int[][] board) {
         GhostCL[] ghosts = game.getGhosts(0);
         if (ghosts == null) return;
         int w = board.length; int h = board[0].length;
         for (GhostCL g : ghosts) {
             Pixel2D gPos = parsePosition(g.getPos(0));
-            for (int dx = -radius; dx <= radius; dx++) {
-                for (int dy = -radius; dy <= radius; dy++) {
+            for (int dx = -SAFETY_RADIUS; dx <= SAFETY_RADIUS; dx++) {
+                for (int dy = -SAFETY_RADIUS; dy <= SAFETY_RADIUS; dy++) {
                     int x = (gPos.getX() + dx + w) % w;
                     int y = (gPos.getY() + dy + h) % h;
                     board[x][y] = 1;
@@ -239,11 +237,9 @@ public class MyAlgo implements PacManAlgo {
      * 3. Otherwise, determine standard direction based on which axis changed.
      * * @param current The starting pixel.
      * @param next    The destination pixel.
-     * @param w       Board width.
-     * @param h       Board height.
      * @return The corresponding Game direction constant (UP, DOWN, LEFT, RIGHT).
      */
-    private int getDirection(Pixel2D current, Pixel2D next, int w, int h) {
+    private int getDirection(Pixel2D current, Pixel2D next) {
         int dx = next.getX() - current.getX();
         int dy = next.getY() - current.getY();
 
